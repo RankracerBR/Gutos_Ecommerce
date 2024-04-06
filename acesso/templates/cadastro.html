@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'global/css/style.css' %}">
+    <title>Página de Cadastro</title>
+</head>
+<body>
+    <h4><a href="{% url 'acesso:pagina' %}" id="voltar">Voltar</a></h4>
+    <h1>Criar Usuário</h1>
+    <form method="POST" enctype="multipart/form-data" action="{% url 'acesso:cadastro' %}">
+        {% csrf_token %}
+        <label for="nome">Nome:</label><br>
+        <input type="text" id="nome" name="nome"><br>
+        
+        <label for="idade">Idade:</label><br>
+        <input type="number" id="idade" name="idade" min="0"><br>
+        
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email"><br>
+        
+        <label for="senha">Senha:</label><br>
+        <input type="password" id="senha" name="senha"><br>
+
+        <label for="imagem">Imagem:</label><br>
+        <input type="file" id="imagem" name="imagem"><br>
+
+        <input type="submit" value="Enviar">
+    </form>
+    {% if error_message %}
+        <p>{{ error_message }}</p>
+    {% endif %}
+</body>
+</html>
