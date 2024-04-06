@@ -6,3 +6,4 @@ class AdminUsuario(admin.ModelAdmin):
     list_display = ('nome', 'email','imagem')
     list_filter = ('nome', 'email', 'imagem')
 
+
