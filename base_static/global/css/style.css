@@ -1,11 +1,18 @@
-body{
-    background-color: rgb(51, 118, 219);
+body {
+    background: radial-gradient(circle, rgb(0, 110, 255), rgb(20, 255, 137));
+    color: #ffffff;
+    box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
     transition: background-color 0.2s ease-in-out;
-    animation: transitionIn 0.85s;
     justify-content: center;
     align-items: center;
     text-align: center;
+    text-shadow: 
+    -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+    animation: transitionIn 1.2s;
 }
 
 @keyframes transitionIn{
@@ -23,6 +30,53 @@ body{
     right: 720px;
 }
 
-.borda{
-    border: 50px solid #000;
+
+.modulos{
+    margin-top: 200px;
+    
+}
+
+h4 a {
+    color: inherit; /* Herda a cor do texto do elemento <h4> */
+    text-decoration: none; /* Remove o sublinhado padrão */
+}
+
+/* Estilos para o link quando o mouse passa sobre ele */
+h4 a:hover {
+    color: #007bff; /* Define a cor do texto ao passar o mouse */
+    text-decoration: none; /* Mantém o sublinhado removido ao passar o mouse */
+}
+
+.tipo-modulo {
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: top;
+}
+
+.tipo-modulo a {
+    color: inherit; /* Herda a cor do texto do pai (.tipo-modulo) */
+    text-decoration: none; /* Remove o sublinhado padrão */
+}
+
+.tipo-modulo a:hover {
+    color: #007bff; /* Define a cor do texto ao passar o mouse */
+    text-decoration: none; /* Mantém o sublinhado removido ao passar o mouse */
+}
+
+#acesso, #voltar{
+    transition: font-size 0.2s ease;
+}
+
+#acesso:hover, #voltar:hover{
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#usuarios{
+    transition: font-size 0.2s ease;
+}
+
+#usuarios:hover{
+    font-size: 20px;
+    cursor: pointer;
 }
