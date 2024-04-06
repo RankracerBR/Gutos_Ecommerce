@@ -4,13 +4,13 @@ from django.db import models
 
 class Usuario(models.Model):
     nome = models.CharField(max_length=40, default='nome_completo')
-    idade = models.IntegerField()
+    idade = models.PositiveSmallIntegerField()
     email = models.EmailField()
     senha = models.TextField(max_length=150, verbose_name="Senha")
     imagem = models.ImageField(upload_to='imgs/')
 
     def __str__(self):
-        return self.name
+        return self.nome
 
 class Produto(models.Model):
     nome_produto = models.CharField(max_length=100, default=None)
