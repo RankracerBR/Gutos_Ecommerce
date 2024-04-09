@@ -1,24 +1,25 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'global/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>Login</title>
 </head>
 <body>
-    <form method="post" action="{% url 'acesso:login' %}">
-        {% csrf_token %}
-        <label for="email">E-mail:</label>
-        <input type="email" id="email" name="email" required>
-        <br>
-        <label for="senha">Senha:</label>
-        <input type="password" id="senha" name="senha" required>
-        <br>
-        <button type="submit">Entrar</button>
-    </form>
-    {% if error_message %}
-        {{ error_message }}
-    {% endif %}
+    <div class="login">
+        <h4><a href="{% url 'acesso:pagina' %}" id="voltar">Voltar</a></h4>
+        <h1>Login</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Login</button>
+        </form>
+        {% if error_message %}
+            {{ error_message }}
+        {% endif %}
+    </div>
 </body>
 </html>
