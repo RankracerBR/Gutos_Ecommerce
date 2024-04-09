@@ -1,12 +1,9 @@
 {% load static %}
-<h1>Olá</h1>
-
-<div class="infos">
-    <div class="boas-vindas">
-        <h2>Boas vindas ao site ecommerce do guto</h2>
-        <h3>Aqui vendemos uma variedade de produtos, entregamos em sua residência independente de onde esteja</h3>
-    </div>
+<div class="bar">   
+    <img class="Ge" src="{% static 'imgs/padrao/Ge.png' %}">
+    <h2 class="gutos-ecommerce">Gutos Ecommerce</h2>
 </div>
+
 <div class="modulos">
     <div class="tipo-modulo" id="acesso">
         <h2>Acesso</h2>
@@ -22,5 +19,49 @@
         <ul id="urls-usuarios" style="display: none;">
             <li><a href="{% url 'usuarios:pagina_usuarios' %}">Usuarios</a></li>
         </ul>
+    </div>
+    <div class="tipo-modulo" id="produtos">
+        <h2>Produtos</h2>
+        <ul id="urls-produtos" style="display: none;">
+            <li><a href="{% url 'produtos:pagina_produtos' %}">Produtos</a></li>
+        </ul>
     </div>    
 </div>
+
+<div class="carousel">
+    <div class="images">
+        <img src="{% static 'imgs/produtos/bone.png' %}">
+        <img src="{% static 'imgs/produtos/calca.png' %}">
+        <img src="{% static 'imgs/produtos/camisa.png' %}">
+        <img src="{% static 'imgs/produtos/relogio.png' %}">
+    </div>
+</div>
+
+
+
+<script>
+    // Seleciona todas as imagens dentro da div com a classe 'images'
+    const images = document.querySelectorAll('.images img');
+    let currentIndex = 0;
+
+    function showImage(index) {
+        // Esconde todas as imagens
+        images.forEach(img => {
+            img.style.display = 'none';
+        });
+
+        // Mostra a imagem atual
+        images[index].style.display = 'block';
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage(currentIndex);
+    }
+
+    // Define o intervalo para trocar as imagens a cada 3 segundos (3000 milissegundos)
+    setInterval(nextImage, 3000);
+
+    // Mostra a primeira imagem ao carregar a página
+    showImage(currentIndex);
+</script>
