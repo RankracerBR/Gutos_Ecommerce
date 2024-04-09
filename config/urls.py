@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from acesso import urls as acesso_urls
 from usuarios import urls as usuarios_urls
+from produtos import urls as produtos_urls
 
 urlpatterns = [
     path('', include(acesso_urls)),
     path('', include(usuarios_urls)),
+    path('', include(produtos_urls)),
     path('admin/', admin.site.urls)
 ]
