@@ -1,16 +1,38 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static  'global/css/style.css'%}">
     <title>Sua Página</title>
     
         
 </head>
 <body>
-    <h4><a href="{% url 'acesso:pagina' %}" id="voltar">Voltar</a></h4>
+    <h4><a href="{% url 'acesso:logout' %}" id="voltar">Voltar</a></h4>
     <div class="infos-usuario">
-        <h1>Bem-Vind@{{ user.usuario }}</h1>
+        <div class="profile-container">
+        {% if user.is_authenticated %}
+        
+            <p>Olá, {{ user.username }}!</p>
+            {% if user.imagem %}
+                <div class="profile-image">
+                    <img src="{{ user.imagem.url }}" alt="Imagem do Usuário">    
+                </div>
+        </div>
+        {% else %}
+            <p>Você não possui uma foto de perfil.</p>
+        {% endif %}
+        {% endif %}
     </div>
+
+    <h3>Categorias dos Produtos</h3>
+    <div class="categoria-produtos">
+        <div>
+            
+        </div>
+    </div>
+
 </body>
 </html>
