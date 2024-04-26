@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'global/css/style.css' %}">
+    <title>Assinante</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <h4><a href="{% url 'usuarios:pagina_conta' %}" id="voltar">Voltar</a></h4>
+    {% else %}
+        <h4><a href="{% url 'acesso:pagina' %}" id="voltar">Voltar</a></h4>
+    {% endif %}
+
+</body>
+</html>
