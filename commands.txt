@@ -1,0 +1,1 @@
+celery -A newsletter_site worker --loglevel=INFO # Run celery
