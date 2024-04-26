@@ -13,7 +13,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import json
+from urllib.parse import urlparse
+from celery_setup import Celery
+from django.conf import settings
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -134,9 +137,13 @@ USE_TZ = True
 
 STATIC_URL = '/base_static/'
 
-STATICFILES_DIRS = (
-    BASE_DIR / 'base_static',
-)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'base_static'),  
+    os.path.join(BASE_DIR, 'acesso'),
+    os.path.join(BASE_DIR, 'produtos'),  
+    os.path.join(BASE_DIR, 'usuarios'),
+    os.path.join(BASE_DIR, 'assinantes'),  
+]
 
 MEDIA_URL = '/imgs/'
 MEDIA_ROOT = os.path.join(IMAGE_PATH, 'imgs')
@@ -160,3 +167,14 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 # Auth
 AUTH_USER_MODEL = 'usuarios.Usuario'
+
+# Celery / RabbitMQ
+uri = os.getenv('DATABASE_URL')
+
+result = urlparse(uri)
+
+database = result.path[1:]
+user = result.username
+password = result.password
+host = result.hostname
+port = result.port
