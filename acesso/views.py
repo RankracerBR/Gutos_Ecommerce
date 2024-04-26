@@ -2,16 +2,19 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from acesso.models import Comentario
 from usuarios.models import Usuario
-from acesso.forms import RegistroForm, UsuarioRegistroForm
+from acesso.forms import RegistroForm, UsuarioRegistroForm, ComentarioForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse
-from acesso.models import RegistroToken
+from acesso.models import RegistroToken, Comentario
+from celery import shared_task
+from django.urls import reverse
 import random
+import string
 
-# Create your views here.
 
 def pagina(request):
     return render(request, 'acesso.html')
@@ -23,6 +26,7 @@ def verificacao_token(request):
             user = form.save(commit=False)
             user.is_verified = False
             user.token = str(random.random()).split('.')[1]
+
             user.save()
 
             domain_name = get_current_site(request).domain
@@ -34,7 +38,9 @@ def verificacao_token(request):
                 [user.email],
                 fail_silently=False,
             )
-            return HttpResponse('Verifique a caixa de entrada do seu email para confirmar')
+            return HttpResponse(
+                'Verifique a caixa de entrada do seu email para confirmar'
+            )
     else:
         form = RegistroForm()
     return render(request, 'enviar_token.html', {'form': form})
@@ -44,21 +50,46 @@ def verificacao(request, token):
         user = RegistroToken.objects.get(token=token)
         user.is_verified = True
         user.save()
-        return redirect('acesso:cadastro')
+        return redirect('acesso:cadastro', token=user.token)
     except RegistroToken.DoesNotExist:
-        return render(request, 'cadastro.html')
+        return HttpResponse(
+            'Token inválido. Por favor, gere um novo token e tente novamente.'
+        )
 
-def cadastro(request):
-    if request.method == 'POST':
+def cadastro(request, token):  
+    if request.method == 'GET':
+        try:
+            registro_token = RegistroToken.objects.get(token=token)
+        except RegistroToken.DoesNotExist:
+            return redirect('acesso:verificacao')
+
+        if registro_token.is_token_valid():
+            form = UsuarioRegistroForm()
+            return render(request, 'cadastro.html', {'form': form})
+        else:
+            return HttpResponse(
+                'O token expirou. Por favor, gere um novo token.'
+            )
+
+    elif request.method == 'POST':
         form = UsuarioRegistroForm(request.POST, request.FILES)
         if form.is_valid():
             usuario = form.save()
-            login(request,usuario)
-            return redirect('acesso:pagina')
-    else:
-        form = UsuarioRegistroForm()
+            login(request, usuario)
+            registrar_cadastro.delay(usuario.id) 
 
-    return render(request, 'cadastro.html', {'form': form})
+            return redirect('acesso:pagina')
+        else:
+            return render(request, 'cadastro.html', {'form': form})
+
+
+@shared_task
+def registrar_cadastro(usuario_id):
+    try:
+        usuario = Usuario.objects.get(pk=usuario_id)
+        print(f"Nova conta adicionada com sucesso!: {usuario}")
+    except Usuario.DoesNotExist:
+        print("Erro ao registrar o cadastro")
 
 def pagina_login(request):
     if request.method == 'POST':
@@ -80,7 +111,29 @@ def funcao_logout(request):
     return redirect('acesso:pagina')
 
 def comentarios(request):
-    return render(request, 'comentarios.html')
+    if request.method == 'POST':
+        form = ComentarioForm(request.POST)
+        if form.is_valid():
+            comentario = form.save(commit=False)
+            comentario.usuario_org = request.user
+            comentario.save()
+            registrar_operacao_comentario(comentario.id)
+
+            return redirect('acesso:comentarios')
+    else:
+        form = ComentarioForm()
+    comentarios = Comentario.objects.all()
+
+    return render(request, 'comentarios.html', {'comentarios': comentarios, 
+                                                'form': form})
+
+@shared_task
+def registrar_operacao_comentario(comentario_id):
+    try:
+        comentario = Comentario.objects.get(pk=comentario_id)
+        print(f"Novo comentário salvo: {comentario}")
+    except Comentario.DoesNotExist:
+        print('Erro ao enviar comentário')
 
 def assinatura(request):
     return render(request, 'assinatura.html')

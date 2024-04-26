@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,33 @@
     <title>Document</title>
 </head>
 <body>
+    {% if user.is_authenticated %}
+    <h4><a href="{% url 'usuarios:pagina_conta' %}" id="voltar">Voltar</a></h4>
+    {% else %}
     <h4><a href="{% url 'acesso:pagina' %}" id="voltar">Voltar</a></h4>
-    Comentarios
+    {% endif %}
+    <h1>Comentários</h1>
+
+    {% if user.is_authenticated %}
+        <p>Logado como: {{ user.username }}</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Enviar Comentário</button>
+        </form>
+    {% else %}
+        <p>Por favor, faça login para enviar um comentário.</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Comentários Existentes:</h2>
+    {% for comentario in comentarios %}
+        <div>
+            <strong>{{ comentario.usuario_org }}</strong>: {{ comentario.comentarios }}
+        </div>
+    {% empty %}
+        <p>Nenhum comentário ainda.</p>
+    {% endfor %}
 </body>
 </html>
