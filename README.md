@@ -1,8 +1,8 @@
 # Gutos Ecommerce
 
-<h3>O seguinte projeto consiste na criação de um e-commerce, onde os usuários podem criar suas contas e comprar determinados produtos,e ainda com a opção de o usuário se tornar um assinante(VIP) da plataforma,
-      tudo isso integrado ao sistema de pagamento da **STRIPE** através da API fornecida.
-</h3>
+#O seguinte projeto consiste na criação de um e-commerce, onde os usuários podem criar suas contas e comprar determinados produtos,e ainda com a opção de o usuário se tornar um assinante(VIP) da plataforma,
+tudo isso integrado ao sistema de pagamento da **STRIPE** através da API fornecida.
+
 
 <hr>
 
