@@ -1,17 +1,22 @@
-from django.conf.urls.static import static
 from django.urls import path
-from produtos import views
-from django.conf import settings
+from produtos.views import (
+    CreateCheckoutSessionView,
+    ProductLandingPageView,
+    SuccessView,
+    CancelView,
+    stripe_webhook,
+    StripeIntentView
+)
 
 app_name = 'produtos'
 
 urlpatterns = [
-    path('pagina_produtos/', views.pagina_produtos, name="pagina_produtos"),
-    path('adicionar-carrinho/<int:produto_id>/', views.adicionar_carrinho, 
-                                                 name='adicionar_carrinho'),
-    path('carrinho/', views.ver_carrinho, name='carrinho'),
-    path('finalizar-compra/', views.finalizar_compra, name='finalizar_compra'),
+    path('create-payment-intent/<pk>/', StripeIntentView.as_view(), 
+                                        name='create-payment-intent'),
+    path('webhooks/stripe/', stripe_webhook, name='stripe-webhook'),
+    path('cancel/', CancelView.as_view(), name='cancel'),
+    path('success/', SuccessView.as_view(), name='success'),
+    path('landing-page/', ProductLandingPageView.as_view(), name='landing-page'),
+    path('create-checkout-session/<pk>/', CreateCheckoutSessionView.as_view(), 
+                                            name='create-checkout-session')
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
