@@ -6,10 +6,21 @@ from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 from django.views import View
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from .models import Product
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+class ProductListView(View):
+    def get(self, request):
+        products = Product.objects.all()
+        return render(request, 'produtos.html', {'products': products})
+
+    def redirectToProduct(request, product_id):
+        return redirect(reverse('produtos:landing-page', kwargs={'pk': product_id}))
 
 
 class SuccessView(TemplateView):
@@ -24,13 +35,17 @@ class ProductLandingPageView(TemplateView):
     template_name = "landing.html"
 
     def get_context_data(self, **kwargs):
-        product = Product.objects.get(name="Test Product")
-        context = super(ProductLandingPageView, self).get_context_data(**kwargs)
-        context.update({
-            "product": product,
-            "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
-        })
-        return context
+        product_id = self.kwargs.get('pk')
+        if product_id:
+            product = Product.objects.get(id=product_id)
+            context = super().get_context_data(**kwargs)
+            context.update({
+                "product": product,
+                "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
+            })
+            return context
+        else:
+            return redirect('404_page')
 
 
 class CreateCheckoutSessionView(View):
@@ -43,7 +58,7 @@ class CreateCheckoutSessionView(View):
             line_items=[
                 {
                     'price_data': {
-                        'currency': 'usd',
+                        'currency': 'brl',
                         'unit_amount': product.price,
                         'product_data': {
                             'name': product.name,
